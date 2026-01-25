@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泰语单词学习 - 百词斩风格</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- 统一的 Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E40AF', // 泰式蓝色
+                        secondary: '#F59E0B', // 泰式金色
+                        accent: '#10B981', // 绿色
+                        light: '#F3F4F6',
+                        dark: '#1F2937'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'flip': 'flip 0.6s ease-in-out',
+                        'slide-in': 'slideIn 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        flip: {
+                            '0%': { transform: 'rotateY(0deg)' },
+                            '100%': { transform: 'rotateY(180deg)' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-flip {
+                perspective: 1000px;
+            }
+            .card-inner {
+                transition: transform 0.6s;
+                transform-style: preserve-3d;
+            }
+            .card-flip:hover .card-inner {
+                transform: rotateY(180deg);
+            }
+            .card-front, .card-back {
+                backface-visibility: hidden;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .card-back {
+                transform: rotateY(180deg);
+            }
+            .progress-ring {
+                transform: rotate(-90deg);
+            }
+            .progress-ring-circle {
+                transition: stroke-dashoffset 0.35s;
+                stroke-width: 8;
+                stroke-dasharray: 283;
+                stroke-dashoffset: 283;
+                stroke-linecap: round;
+                fill: none;
+            }
+            .thai-pattern {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48cGF0aCBkPSJNMzAgMTVjNy43MyAwIDE0IDYuMjcgMTQgMTRzLTYuMjcgMTQtMTQgMTRzLTE0LTYuMjctMTQtMTRzNi4yNy0xNCAxNC0xNHptMCAyNmMtNi42MyAwLTeyLTUuMzctMTItMTJTMjMuMzcgMTUgMzAgMTVzMTIgNS4zNyAxMiAxMnMtNS4zNyAxMi0xMiAxMnoiIGZpbGw9IiNGRjkwNzAiIGZpbGwtb3BhY2l0eT0iMC4yIi8+PC9zdmc+');
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-primary text-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/993512548046995562~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=%2BKFqhBa9%2Blq7%2Fbhd0Fbe4S5XHnw%3D" alt="Logo" class="h-8 w-8 rounded-full">
+                <h1 class="text-xl font-bold">泰语单词学习</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <input type="text" placeholder="搜索单词..." class="py-1 px-3 rounded-full text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-secondary w-40 md:w-64">
+                    <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <img src="https://p5-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/b2d19a16701242889eb0273f5aa7ba51~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012518392937C10E0DDC969B100706&rrcfp=f06b921b&x-expires=1771929619&x-signature=cT3juLV969V0QyloZBcXrDONvtQ%3D" alt="User" class="h-8 w-8 rounded-full border-2 border-white">
+                    <span class="hidden md:inline">学习者</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container mx-auto px-4 py-6 flex flex-col md:flex-row">
+        <!-- 左侧导航 -->
+        <aside class="w-full md:w-64 bg-white rounded-lg shadow-md p-4 mb-6 md:mb-0 md:mr-6">
+            <div class="flex flex-col space-y-4">
+                <div class="flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary">
+                    <i class="fa fa-home text-xl"></i>
+                    <span class="font-medium">首页</span>
+                </div>
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 cursor-pointer">
+                    <i class="fa fa-book text-gray-600 text-xl"></i>
+                    <span>单词本</span>
+                </div>
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 cursor-pointer">
+                    <i class="fa fa-headphones text-gray-600 text-xl"></i>
+                    <span>发音练习</span>
+                </div>
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 cursor-pointer">
+                    <i class="fa fa-check-square-o text-gray-600 text-xl"></i>
+                    <span>记忆测试</span>
+                </div>
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 cursor-pointer">
+                    <i class="fa fa-line-chart text-gray-600 text-xl"></i>
+                    <span>学习统计</span>
+                </div>
+                <div class="border-t border-gray-200 my-2"></div>
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-2">学习进度</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">今日学习</span>
+                        <span class="text-sm font-medium">15/20</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-secondary h-2.5 rounded-full" style="width: 75%"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-4 mb-2">
+                        <span class="text-sm text-gray-600">本周学习</span>
+                        <span class="text-sm font-medium">85/100</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-secondary h-2.5 rounded-full" style="width: 85%"></div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-200 my-2"></div>
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-2">词库分类</h3>
+                    <ul class="space-y-1">
+                        <li class="text-sm text-gray-600 hover:text-primary cursor-pointer">日常用语</li>
+                        <li class="text-sm text-gray-600 hover:text-primary cursor-pointer">旅游必备</li>
+                        <li class="text-sm text-gray-600 hover:text-primary cursor-pointer">商务交流</li>
+                        <li class="text-sm text-gray-600 hover:text-primary cursor-pointer">美食餐饮</li>
+                        <li class="text-sm text-gray-600 hover:text-primary cursor-pointer">交通出行</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 右侧主内容 -->
+        <main class="flex-1">
+            <!-- 学习模式选择 -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">开始学习</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-primary bg-opacity-10 rounded-lg p-4 flex flex-col items-center cursor-pointer hover:bg-opacity-20 transition-all">
+                        <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white mb-3">
+                            <i class="fa fa-book text-2xl"></i>
+                        </div>
+                        <h3 class="font-medium text-lg mb-1">单词卡片</h3>
+                        <p class="text-sm text-gray-600 text-center">通过图片联想记忆泰语单词</p>
+                    </div>
+                    <div class="bg-secondary bg-opacity-10 rounded-lg p-4 flex flex-col items-center cursor-pointer hover:bg-opacity-20 transition-all">
+                        <div class="w-16 h-16 rounded-full bg-secondary flex items-center justify-center text-white mb-3">
+                            <i class="fa fa-microphone text-2xl"></i>
+                        </div>
+                        <h3 class="font-medium text-lg mb-1">发音练习</h3>
+                        <p class="text-sm text-gray-600 text-center">跟读标准发音，纠正语音语调</p>
+                    </div>
+                    <div class="bg-accent bg-opacity-10 rounded-lg p-4 flex flex-col items-center cursor-pointer hover:bg-opacity-20 transition-all">
+                        <div class="w-16 h-16 rounded-full bg-accent flex items-center justify-center text-white mb-3">
+                            <i class="fa fa-gamepad text-2xl"></i>
+                        </div>
+                        <h3 class="font-medium text-lg mb-1">记忆测试</h3>
+                        <p class="text-sm text-gray-600 text-center">多种题型检验学习成果</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 单词卡片学习区 -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">单词卡片学习</h2>
+                    <div class="flex space-x-2">
+                        <button class="py-1 px-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm flex items-center">
+                            <i class="fa fa-list-ul mr-1"></i> 列表
+                        </button>
+                        <button class="py-1 px-3 bg-primary text-white hover:bg-primary-dark rounded-lg text-sm flex items-center">
+                            <i class="fa fa-th-large mr-1"></i> 卡片
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 单词卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="word-cards">
+                    <!-- 卡片1 -->
+                    <div class="card-flip h-64">
+                        <div class="card-inner relative w-full h-full">
+                            <div class="card-front bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <img src="https://p5-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/00f26c5a5d0647b0aef6e266e2da9c4c~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012518392937C10E0DDC969B100706&rrcfp=f06b921b&x-expires=1771929606&x-signature=c1%2FrKxHBYp%2FirZtF%2FxL%2B%2FaZP2hE%3D" alt="你好" class="h-full w-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-2xl font-bold text-center text-primary">สวัสดี</h3>
+                                    <p class="text-center text-gray-500 mt-1">Sawasdee</p>
+                                    <div class="mt-4 flex justify-center">
+                                        <button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark">
+                                            <i class="fa fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-back bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary p-4 flex flex-col justify-center">
+                                <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">你好</h3>
+                                <p class="text-center text-gray-600 mb-4">打招呼用语</p>
+                                <div class="bg-gray-100 rounded-lg p-3 mb-4">
+                                    <p class="text-sm text-gray-700">例句：</p>
+                                    <p class="text-sm text-gray-600">สวัสดีค่ะ/ครับ (Sawasdee ka/krab)</p>
+                                    <p class="text-sm text-gray-600">你好（女性/男性用语）</p>
+                                </div>
+                                <div class="flex justify-between">
+                                    <button class="py-1 px-3 bg-red-100 text-red-600 rounded-lg text-sm">
+                                        <i class="fa fa-times mr-1"></i> 不认识
+                                    </button>
+                                    <button class="py-1 px-3 bg-green-100 text-green-600 rounded-lg text-sm">
+                                        <i class="fa fa-check mr-1"></i> 认识
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片2 -->
+                    <div class="card-flip h-64">
+                        <div class="card-inner relative w-full h-full">
+                            <div class="card-front bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1023262824422834209~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=E4lQkrBIxyPgQbPUYjbDTjEB%2FuA%3D" alt="谢谢" class="h-full w-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-2xl font-bold text-center text-primary">ขอบคุณ</h3>
+                                    <p class="text-center text-gray-500 mt-1">Khob khun</p>
+                                    <div class="mt-4 flex justify-center">
+                                        <button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark">
+                                            <i class="fa fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-back bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary p-4 flex flex-col justify-center">
+                                <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">谢谢</h3>
+                                <p class="text-center text-gray-600 mb-4">感谢用语</p>
+                                <div class="bg-gray-100 rounded-lg p-3 mb-4">
+                                    <p class="text-sm text-gray-700">例句：</p>
+                                    <p class="text-sm text-gray-600">ขอบคุณมาก (Khob khun mak)</p>
+                                    <p class="text-sm text-gray-600">非常感谢</p>
+                                </div>
+                                <div class="flex justify-between">
+                                    <button class="py-1 px-3 bg-red-100 text-red-600 rounded-lg text-sm">
+                                        <i class="fa fa-times mr-1"></i> 不认识
+                                    </button>
+                                    <button class="py-1 px-3 bg-green-100 text-green-600 rounded-lg text-sm">
+                                        <i class="fa fa-check mr-1"></i> 认识
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片3 -->
+                    <div class="card-flip h-64">
+                        <div class="card-inner relative w-full h-full">
+                            <div class="card-front bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <img src="https://p11-doubao-search-sign.byteimg.com/labis/5ec029f4a0f272203a8175413fa98430~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=LhQKn8GF%2BQM2UTYQC9u06svMQHk%3D" alt="好" class="h-full w-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-2xl font-bold text-center text-primary">ดี</h3>
+                                    <p class="text-center text-gray-500 mt-1">Dee</p>
+                                    <div class="mt-4 flex justify-center">
+                                        <button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark">
+                                            <i class="fa fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-back bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary p-4 flex flex-col justify-center">
+                                <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">好</h3>
+                                <p class="text-center text-gray-600 mb-4">形容词</p>
+                                <div class="bg-gray-100 rounded-lg p-3 mb-4">
+                                    <p class="text-sm text-gray-700">例句：</p>
+                                    <p class="text-sm text-gray-600">สบายดี (Sabai dee)</p>
+                                    <p class="text-sm text-gray-600">很好，很舒服</p>
+                                </div>
+                                <div class="flex justify-between">
+                                    <button class="py-1 px-3 bg-red-100 text-red-600 rounded-lg text-sm">
+                                        <i class="fa fa-times mr-1"></i> 不认识
+                                    </button>
+                                    <button class="py-1 px-3 bg-green-100 text-green-600 rounded-lg text-sm">
+                                        <i class="fa fa-check mr-1"></i> 认识
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片4 -->
+                    <div class="card-flip h-64">
+                        <div class="card-inner relative w-full h-full">
+                            <div class="card-front bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/920034591028805738~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=y%2B3jKZ51KkxpBn%2Bga4zTH11ACTM%3D" alt="你好" class="h-full w-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-2xl font-bold text-center text-primary">สวัสดี</h3>
+                                    <p class="text-center text-gray-500 mt-1">Sawasdee</p>
+                                    <div class="mt-4 flex justify-center">
+                                        <button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark">
+                                            <i class="fa fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-back bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary p-4 flex flex-col justify-center">
+                                <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">你好</h3>
+                                <p class="text-center text-gray-600 mb-4">打招呼用语</p>
+                                <div class="bg-gray-100 rounded-lg p-3 mb-4">
+                                    <p class="text-sm text-gray-700">例句：</p>
+                                    <p class="text-sm text-gray-600">สวัสดีตอนเช้า (Sawasdee ton chao)</p>
+                                    <p class="text-sm text-gray-600">早上好</p>
+                                </div>
+                                <div class="flex justify-between">
+                                    <button class="py-1 px-3 bg-red-100 text-red-600 rounded-lg text-sm">
+                                        <i class="fa fa-times mr-1"></i> 不认识
+                                    </button>
+                                    <button class="py-1 px-3 bg-green-100 text-green-600 rounded-lg text-sm">
+                                        <i class="fa fa-check mr-1"></i> 认识
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片5 -->
+                    <div class="card-flip h-64">
+                        <div class="card-inner relative w-full h-full">
+                            <div class="card-front bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/2311244085238431753~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=NfEh68Kk4QzGQ1v3MMEbDU2X9h4%3D" alt="谢谢" class="h-full w-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-2xl font-bold text-center text-primary">ขอบคุณ</h3>
+                                    <p class="text-center text-gray-500 mt-1">Khob khun</p>
+                                    <div class="mt-4 flex justify-center">
+                                        <button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark">
+                                            <i class="fa fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-back bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary p-4 flex flex-col justify-center">
+                                <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">谢谢</h3>
+                                <p class="text-center text-gray-600 mb-4">感谢用语</p>
+                                <div class="bg-gray-100 rounded-lg p-3 mb-4">
+                                    <p class="text-sm text-gray-700">例句：</p>
+                                    <p class="text-sm text-gray-600">ขอบคุณที่ช่วยฉัน (Khob khun tee chuey chan)</p>
+                                    <p class="text-sm text-gray-600">谢谢你帮助我</p>
+                                </div>
+                                <div class="flex justify-between">
+                                    <button class="py-1 px-3 bg-red-100 text-red-600 rounded-lg text-sm">
+                                        <i class="fa fa-times mr-1"></i> 不认识
+                                    </button>
+                                    <button class="py-1 px-3 bg-green-100 text-green-600 rounded-lg text-sm">
+                                        <i class="fa fa-check mr-1"></i> 认识
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片6 -->
+                    <div class="card-flip h-64">
+                        <div class="card-inner relative w-full h-full">
+                            <div class="card-front bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary">
+                                <div class="h-32 bg-primary flex items-center justify-center">
+                                    <img src="https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D" alt="数字" class="h-full w-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-2xl font-bold text-center text-primary">หนึ่ง</h3>
+                                    <p class="text-center text-gray-500 mt-1">Neung</p>
+                                    <div class="mt-4 flex justify-center">
+                                        <button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark">
+                                            <i class="fa fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-back bg-white rounded-xl shadow-md overflow-hidden border-2 border-primary p-4 flex flex-col justify-center">
+                                <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">一</h3>
+                                <p class="text-center text-gray-600 mb-4">数字</p>
+                                <div class="bg-gray-100 rounded-lg p-3 mb-4">
+                                    <p class="text-sm text-gray-700">例句：</p>
+                                    <p class="text-sm text-gray-600">หนึ่งคน (Neung khon)</p>
+                                    <p class="text-sm text-gray-600">一个人</p>
+                                </div>
+                                <div class="flex justify-between">
+                                    <button class="py-1 px-3 bg-red-100 text-red-600 rounded-lg text-sm">
+                                        <i class="fa fa-times mr-1"></i> 不认识
+                                    </button>
+                                    <button class="py-1 px-3 bg-green-100 text-green-600 rounded-lg text-sm">
+                                        <i class="fa fa-check mr-1"></i> 认识
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分页 -->
+                <div class="flex justify-center mt-8">
+                    <nav class="flex items-center space-x-1">
+                        <button class="px-3 py-1 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fa fa-angle-left"></i>
+                        </button>
+                        <button class="px-3 py-1 rounded-md bg-primary text-white">1</button>
+                        <button class="px-3 py-1 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200">2</button>
+                        <button class="px-3 py-1 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200">3</button>
+                        <button class="px-3 py-1 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fa fa-angle-right"></i>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- 发音练习区 -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">发音练习</h2>
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <div class="flex flex-col items-center">
+                        <h3 class="text-3xl font-bold text-primary mb-2">สวัสดี</h3>
+                        <p class="text-gray-600 mb-6">Sawasdee - 你好</p>
+                        <div class="w-24 h-24 rounded-full bg-primary flex items-center justify-center mb-6">
+                            <button class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-primary hover:bg-gray-100">
+                                <i class="fa fa-volume-up text-4xl"></i>
+                            </button>
+                        </div>
+                        <div class="w-full max-w-md">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-600">发音相似度</span>
+                                <span class="text-sm font-medium">85%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <button class="mt-6 py-2 px-6 bg-secondary text-white rounded-lg hover:bg-yellow-500 flex items-center">
+                            <i class="fa fa-microphone mr-2"></i> 开始跟读
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 学习进度区 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">学习进度</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-3">每日学习时长</h3>
+                        <canvas id="studyTimeChart" height="200"></canvas>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-3">累计词汇量</h3>
+                        <canvas id="vocabularyChart" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-sm font-medium text-gray-600 mb-1">今日学习</h3>
+                        <p class="text-2xl font-bold text-primary">15</p>
+                        <p class="text-xs text-gray-500">单词</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-sm font-medium text-gray-600 mb-1">本周学习</h3>
+                        <p class="text-2xl font-bold text-primary">85</p>
+                        <p class="text-xs text-gray-500">单词</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-sm font-medium text-gray-600 mb-1">总词汇量</h3>
+                        <p class="text-2xl font-bold text-primary">320</p>
+                        <p class="text-xs text-gray-500">单词</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-8 mt-10">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">泰语单词学习</h3>
+                    <p class="text-gray-400">通过图片联想、发音听辨、拼写练习等多种方式，帮助用户高效记忆泰语单词。</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">首页</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">单词本</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">发音练习</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">记忆测试</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">学习统计</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">联系我们</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope mr-2 text-gray-400"></i>
+                            <a href="mailto:contact@thailearning.com" class="text-gray-400 hover:text-white">contact@thailearning.com</a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">+86 123 4567 8910</span>
+                        </li>
+                    </ul>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fa fa-qq text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2026 泰语单词学习. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 单词数据
+        const wordsData = [
+            {
+                id: 1,
+                thai: 'สวัสดี',
+                romanized: 'Sawasdee',
+                chinese: '你好',
+                type: '打招呼用语',
+                example: 'สวัสดีค่ะ/ครับ (Sawasdee ka/krab)',
+                exampleTranslation: '你好（女性/男性用语）',
+                image: 'https://p5-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/00f26c5a5d0647b0aef6e266e2da9c4c~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012518392937C10E0DDC969B100706&rrcfp=f06b921b&x-expires=1771929606&x-signature=c1%2FrKxHBYp%2FirZtF%2FxL%2B%2FaZP2hE%3D',
+                audio: 'sawasdee.mp3',
+                mastered: false
+            },
+            {
+                id: 2,
+                thai: 'ขอบคุณ',
+                romanized: 'Khob khun',
+                chinese: '谢谢',
+                type: '感谢用语',
+                example: 'ขอบคุณมาก (Khob khun mak)',
+                exampleTranslation: '非常感谢',
+                image: 'https://p11-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1023262824422834209~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=E4lQkrBIxyPgQbPUYjbDTjEB%2FuA%3D',
+                audio: 'khobkhun.mp3',
+                mastered: false
+            },
+            {
+                id: 3,
+                thai: 'ดี',
+                romanized: 'Dee',
+                chinese: '好',
+                type: '形容词',
+                example: 'สบายดี (Sabai dee)',
+                exampleTranslation: '很好，很舒服',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/5ec029f4a0f272203a8175413fa98430~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=LhQKn8GF%2BQM2UTYQC9u06svMQHk%3D',
+                audio: 'dee.mp3',
+                mastered: true
+            },
+            {
+                id: 4,
+                thai: 'หนึ่ง',
+                romanized: 'Neung',
+                chinese: '一',
+                type: '数字',
+                example: 'หนึ่งคน (Neung khon)',
+                exampleTranslation: '一个人',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'neung.mp3',
+                mastered: false
+            },
+            {
+                id: 5,
+                thai: 'สอง',
+                romanized: 'Song',
+                chinese: '二',
+                type: '数字',
+                example: 'สองคน (Song khon)',
+                exampleTranslation: '两个人',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'song.mp3',
+                mastered: true
+            },
+            {
+                id: 6,
+                thai: 'สาม',
+                romanized: 'Sam',
+                chinese: '三',
+                type: '数字',
+                example: 'สามคน (Sam khon)',
+                exampleTranslation: '三个人',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'sam.mp3',
+                mastered: false
+            }
+        ];
+
+        // 学习进度数据
+        const studyProgress = {
+            dailyTime: [30, 45, 60, 40, 65, 70, 60], // 分钟
+            weeklyVocabulary: [50, 75, 120, 180, 230, 280, 320] // 单词量
+        };
+
+        // 初始化图表
+        document.addEventListener('DOMContentLoaded', function() {
+            // 每日学习时长图表
+            const studyTimeCtx = document.getElementById('studyTimeChart').getContext('2d');
+            const studyTimeChart = new Chart(studyTimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [{
+                        label: '学习时长（分钟）',
+                        data: studyProgress.dailyTime,
+                        backgroundColor: '#1E40AF',
+                        borderColor: '#1E40AF',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 累计词汇量图表
+            const vocabularyCtx = document.getElementById('vocabularyChart').getContext('2d');
+            const vocabularyChart = new Chart(vocabularyCtx, {
+                type: 'line',
+                data: {
+                    labels: ['第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周'],
+                    datasets: [{
+                        label: '累计词汇量',
+                        data: studyProgress.weeklyVocabulary,
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        borderColor: '#10B981',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+        // 发音练习功能
+        document.querySelectorAll('.fa-volume-up').forEach(button => {
+            button.addEventListener('click', function() {
+                // 模拟播放音频
+                alert('播放发音: ' + this.closest('.card-inner').querySelector('.card-front h3').textContent);
+            });
+        });
+
+        // 单词认识/不认识按钮
+        document.querySelectorAll('.bg-red-100, .bg-green-100').forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.card-inner');
+                const wordText = card.querySelector('.card-front h3').textContent;
+                
+                if (this.classList.contains('bg-green-100')) {
+                    alert('已标记为"认识": ' + wordText);
+                    // 这里可以添加更新单词状态的逻辑
+                } else {
+                    alert('已标记为"不认识": ' + wordText);
+                    // 这里可以添加更新单词状态的逻辑
+                }
+                
+                // 模拟卡片翻回正面
+                setTimeout(() => {
+                    card.style.transform = 'rotateY(0deg)';
+                }, 500);
+            });
+        });
+
+        // 开始跟读按钮
+        document.querySelector('.bg-secondary').addEventListener('click', function() {
+            alert('开始录音跟读...');
+            // 这里可以添加语音识别和评分的逻辑
+        });
+
+        // 搜索功能
+        document.querySelector('input[placeholder="搜索单词..."]').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = this.value.trim();
+                if (searchTerm) {
+                    alert('搜索单词: ' + searchTerm);
+                    // 这里可以添加搜索单词的逻辑
+                }
+            }
+        });
+    </script>
+</body>
+</html>
