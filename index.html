@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>泰语单词学习 - 百词斩风格</title>
+    <title>泰语单词学习</title>
     <!-- Tailwind CSS v3 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -642,8 +642,91 @@
                 image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
                 audio: 'sam.mp3',
                 mastered: false
+            },
+            {
+                id: 7,
+                thai: 'น้ำ',
+                romanized: 'Nam',
+                chinese: '水',
+                type: '名词',
+                example: 'ดื่มน้ำ (Deum nam)',
+                exampleTranslation: '喝水',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'nam.mp3',
+                mastered: false
+            },
+            {
+                id: 8,
+                thai: 'อาหาร',
+                romanized: 'Ahan',
+                chinese: '食物',
+                type: '名词',
+                example: 'กินอาหาร (Gin ahan)',
+                exampleTranslation: '吃饭',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'ahan.mp3',
+                mastered: false
+            },
+            {
+                id: 9,
+                thai: 'โรงแรม',
+                romanized: 'Rong ram',
+                chinese: '酒店',
+                type: '名词',
+                example: 'โรงแรมดี (Rong ram dee)',
+                exampleTranslation: '好酒店',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'rongram.mp3',
+                mastered: false
+            },
+            {
+                id: 10,
+                thai: 'ไป',
+                romanized: 'Pai',
+                chinese: '去',
+                type: '动词',
+                example: 'ไปที่ไหน (Pai tee nai)',
+                exampleTranslation: '去哪里',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'pai.mp3',
+                mastered: false
+            },
+            {
+                id: 11,
+                thai: 'มา',
+                romanized: 'Maa',
+                chinese: '来',
+                type: '动词',
+                example: 'มาที่นี่ (Maa tee nee)',
+                exampleTranslation: '来这里',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'maa.mp3',
+                mastered: false
+            },
+            {
+                id: 12,
+                thai: 'รถ',
+                romanized: 'Rot',
+                chinese: '车',
+                type: '名词',
+                example: 'รถสีแดง (Rot see daeng)',
+                exampleTranslation: '红色的车',
+                image: 'https://p11-doubao-search-sign.byteimg.com/labis/image/fa0d23520c877a526bd606dae9a37bfd~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1784889586&x-signature=luPSF9%2BkMpUvNd9t1giItNjDMyA%3D',
+                audio: 'rot.mp3',
+                mastered: false
             }
         ];
+        
+        // 当前学习模式
+        let currentMode = 'cards'; // 'cards' 或 'list'
+        // 当前页码
+        let currentPage = 1;
+        // 每页显示的单词数量
+        const wordsPerPage = 6;
+        // 当前筛选的词库分类
+        let currentCategory = 'all';
+        // 当前搜索关键词
+        let currentSearchTerm = '';
 
         // 学习进度数据
         const studyProgress = {
@@ -651,8 +734,41 @@
             weeklyVocabulary: [50, 75, 120, 180, 230, 280, 320] // 单词量
         };
 
-        // 初始化图表
+        // 初始化应用
         document.addEventListener('DOMContentLoaded', function() {
+            // 初始化图表
+            initCharts();
+            
+            // 初始化导航事件
+            initNavigation();
+            
+            // 初始化学习模式选择
+            initLearningModes();
+            
+            // 初始化单词卡片视图切换
+            initViewToggle();
+            
+            // 初始化单词卡片交互
+            initWordCards();
+            
+            // 初始化分页
+            initPagination();
+            
+            // 初始化发音练习
+            initPronunciationPractice();
+            
+            // 初始化搜索功能
+            initSearch();
+            
+            // 初始化词库分类筛选
+            initCategoryFilter();
+            
+            // 渲染单词卡片
+            renderWordCards();
+        });
+        
+        // 初始化图表
+        function initCharts() {
             // 每日学习时长图表
             const studyTimeCtx = document.getElementById('studyTimeChart').getContext('2d');
             const studyTimeChart = new Chart(studyTimeCtx, {
@@ -702,53 +818,738 @@
                     }
                 }
             });
-        });
-
-        // 发音练习功能
-        document.querySelectorAll('.fa-volume-up').forEach(button => {
-            button.addEventListener('click', function() {
-                // 模拟播放音频
-                alert('播放发音: ' + this.closest('.card-inner').querySelector('.card-front h3').textContent);
+        }
+        
+        // 初始化导航事件
+        function initNavigation() {
+            // 左侧导航菜单点击事件
+            const navItems = document.querySelectorAll('aside .flex.items-center');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除所有选中状态
+                    navItems.forEach(navItem => {
+                        navItem.classList.remove('bg-primary', 'bg-opacity-10', 'text-primary');
+                        navItem.classList.add('hover:bg-gray-100');
+                        const icon = navItem.querySelector('i');
+                        if (icon) {
+                            icon.classList.remove('text-primary');
+                            icon.classList.add('text-gray-600');
+                        }
+                    });
+                    
+                    // 添加选中状态
+                    this.classList.add('bg-primary', 'bg-opacity-10', 'text-primary');
+                    this.classList.remove('hover:bg-gray-100');
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.classList.add('text-primary');
+                        icon.classList.remove('text-gray-600');
+                    }
+                    
+                    // 获取导航项文本
+                    const navText = this.querySelector('span').textContent;
+                    
+                    // 根据导航项执行不同操作
+                    switch(navText) {
+                        case '首页':
+                            showSection('home');
+                            break;
+                        case '单词本':
+                            showSection('wordbook');
+                            break;
+                        case '发音练习':
+                            showSection('pronunciation');
+                            break;
+                        case '记忆测试':
+                            showSection('test');
+                            break;
+                        case '学习统计':
+                            showSection('statistics');
+                            break;
+                    }
+                });
             });
-        });
-
-        // 单词认识/不认识按钮
-        document.querySelectorAll('.bg-red-100, .bg-green-100').forEach(button => {
-            button.addEventListener('click', function() {
-                const card = this.closest('.card-inner');
-                const wordText = card.querySelector('.card-front h3').textContent;
-                
-                if (this.classList.contains('bg-green-100')) {
-                    alert('已标记为"认识": ' + wordText);
-                    // 这里可以添加更新单词状态的逻辑
-                } else {
-                    alert('已标记为"不认识": ' + wordText);
-                    // 这里可以添加更新单词状态的逻辑
+        }
+        
+        // 显示指定部分
+        function showSection(section) {
+            // 获取所有主要内容区域
+            const sections = document.querySelectorAll('main > div');
+            
+            // 隐藏所有区域
+            sections.forEach(s => {
+                s.classList.add('hidden');
+            });
+            
+            // 根据section参数显示对应区域
+            switch(section) {
+                case 'home':
+                    // 显示所有区域（首页）
+                    sections.forEach(s => {
+                        s.classList.remove('hidden');
+                    });
+                    break;
+                case 'wordbook':
+                    // 只显示单词卡片学习区
+                    document.querySelector('#word-cards').closest('div.bg-white').classList.remove('hidden');
+                    break;
+                case 'pronunciation':
+                    // 只显示发音练习区
+                    document.querySelector('.bg-white:nth-of-type(3)').classList.remove('hidden');
+                    break;
+                case 'test':
+                    // 显示记忆测试区（如果存在）
+                    const testSection = document.querySelector('.bg-white:nth-of-type(4)');
+                    if (testSection) {
+                        testSection.classList.remove('hidden');
+                    } else {
+                        // 如果不存在，显示提示
+                        alert('记忆测试功能即将推出，敬请期待！');
+                        // 回到首页
+                        sections.forEach(s => {
+                            s.classList.remove('hidden');
+                        });
+                    }
+                    break;
+                case 'statistics':
+                    // 只显示学习进度区
+                    document.querySelector('.bg-white:last-of-type').classList.remove('hidden');
+                    break;
+            }
+        }
+        
+        // 初始化学习模式选择
+        function initLearningModes() {
+            const modeCards = document.querySelectorAll('.bg-white:nth-of-type(1) .grid > div');
+            modeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const modeTitle = this.querySelector('h3').textContent;
+                    
+                    switch(modeTitle) {
+                        case '单词卡片':
+                            showSection('wordbook');
+                            break;
+                        case '发音练习':
+                            showSection('pronunciation');
+                            break;
+                        case '记忆测试':
+                            showSection('test');
+                            break;
+                    }
+                });
+            });
+        }
+        
+        // 初始化单词卡片视图切换
+        function initViewToggle() {
+            const listBtn = document.querySelector('.fa-list-ul').parentElement;
+            const cardBtn = document.querySelector('.fa-th-large').parentElement;
+            
+            listBtn.addEventListener('click', function() {
+                if (currentMode !== 'list') {
+                    currentMode = 'list';
+                    listBtn.classList.add('bg-primary', 'text-white');
+                    listBtn.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                    cardBtn.classList.remove('bg-primary', 'text-white');
+                    cardBtn.classList.add('bg-gray-100', 'hover:bg-gray-200');
+                    renderWordList();
                 }
-                
-                // 模拟卡片翻回正面
-                setTimeout(() => {
-                    card.style.transform = 'rotateY(0deg)';
-                }, 500);
             });
-        });
-
-        // 开始跟读按钮
-        document.querySelector('.bg-secondary').addEventListener('click', function() {
-            alert('开始录音跟读...');
-            // 这里可以添加语音识别和评分的逻辑
-        });
-
-        // 搜索功能
-        document.querySelector('input[placeholder="搜索单词..."]').addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') {
-                const searchTerm = this.value.trim();
-                if (searchTerm) {
-                    alert('搜索单词: ' + searchTerm);
-                    // 这里可以添加搜索单词的逻辑
+            
+            cardBtn.addEventListener('click', function() {
+                if (currentMode !== 'cards') {
+                    currentMode = 'cards';
+                    cardBtn.classList.add('bg-primary', 'text-white');
+                    cardBtn.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                    listBtn.classList.remove('bg-primary', 'text-white');
+                    listBtn.classList.add('bg-gray-100', 'hover:bg-gray-200');
+                    renderWordCards();
+                }
+            });
+        }
+        
+        // 渲染单词卡片
+        function renderWordCards() {
+            const wordCardsContainer = document.getElementById('word-cards');
+            if (!wordCardsContainer) return;
+            
+            // 清空容器
+            wordCardsContainer.innerHTML = '';
+            
+            // 获取筛选和搜索后的单词
+            const filteredWords = getFilteredWords();
+            
+            // 计算分页
+            const startIndex = (currentPage - 1) * wordsPerPage;
+            const endIndex = startIndex + wordsPerPage;
+            const paginatedWords = filteredWords.slice(startIndex, endIndex);
+            
+            // 渲染卡片
+            paginatedWords.forEach(word => {
+                const card = createWordCard(word);
+                wordCardsContainer.appendChild(card);
+            });
+            
+            // 更新分页信息
+            updatePagination(filteredWords.length);
+            
+            // 重新绑定卡片事件
+            bindCardEvents();
+        }
+        
+        // 创建单词卡片
+        function createWordCard(word) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card-flip h-64';
+            cardDiv.dataset.wordId = word.id;
+            
+            cardDiv.innerHTML = `
+                <div class="card-inner relative w-full h-full">
+                    <div class="card-front bg-white rounded-xl shadow-md overflow-hidden border-2 ${word.mastered ? 'border-green-500' : 'border-primary'}">
+                        <div class="h-32 bg-primary flex items-center justify-center">
+                            <img src="${word.image}" alt="${word.chinese}" class="h-full w-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-2xl font-bold text-center text-primary">${word.thai}</h3>
+                            <p class="text-center text-gray-500 mt-1">${word.romanized}</p>
+                            <div class="mt-4 flex justify-center">
+                                <button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark">
+                                    <i class="fa fa-volume-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-back bg-white rounded-xl shadow-md overflow-hidden border-2 ${word.mastered ? 'border-green-500' : 'border-primary'} p-4 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">${word.chinese}</h3>
+                        <p class="text-center text-gray-600 mb-4">${word.type}</p>
+                        <div class="bg-gray-100 rounded-lg p-3 mb-4">
+                            <p class="text-sm text-gray-700">例句：</p>
+                            <p class="text-sm text-gray-600">${word.example}</p>
+                            <p class="text-sm text-gray-600">${word.exampleTranslation}</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <button class="py-1 px-3 bg-red-100 text-red-600 rounded-lg text-sm" data-action="unmastered">
+                                <i class="fa fa-times mr-1"></i> 不认识
+                            </button>
+                            <button class="py-1 px-3 bg-green-100 text-green-600 rounded-lg text-sm" data-action="mastered">
+                                <i class="fa fa-check mr-1"></i> 认识
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return cardDiv;
+        }
+        
+        // 渲染单词列表
+        function renderWordList() {
+            const wordCardsContainer = document.getElementById('word-cards');
+            if (!wordCardsContainer) return;
+            
+            // 清空容器
+            wordCardsContainer.innerHTML = '';
+            wordCardsContainer.className = 'w-full';
+            
+            // 创建表格
+            const table = document.createElement('table');
+            table.className = 'min-w-full divide-y divide-gray-200';
+            
+            // 创建表头
+            const thead = document.createElement('thead');
+            thead.className = 'bg-gray-50';
+            thead.innerHTML = `
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">泰语</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">罗马音</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">中文</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            // 创建表体
+            const tbody = document.createElement('tbody');
+            tbody.className = 'bg-white divide-y divide-gray-200';
+            
+            // 获取筛选和搜索后的单词
+            const filteredWords = getFilteredWords();
+            
+            // 计算分页
+            const startIndex = (currentPage - 1) * wordsPerPage;
+            const endIndex = startIndex + wordsPerPage;
+            const paginatedWords = filteredWords.slice(startIndex, endIndex);
+            
+            // 渲染行
+            paginatedWords.forEach(word => {
+                const tr = document.createElement('tr');
+                tr.className = word.mastered ? 'bg-green-50' : '';
+                tr.dataset.wordId = word.id;
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${word.thai}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${word.romanized}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${word.chinese}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${word.type}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-primary hover:text-primary-dark mr-3" data-action="play-audio">
+                            <i class="fa fa-volume-up"></i>
+                        </button>
+                        <button class="text-green-600 hover:text-green-800 mr-3" data-action="show-example">
+                            <i class="fa fa-comment"></i>
+                        </button>
+                        <button class="${word.mastered ? 'text-yellow-600 hover:text-yellow-800' : 'text-green-600 hover:text-green-800'}" data-action="toggle-mastered">
+                            <i class="fa ${word.mastered ? 'fa-star' : 'fa-check-circle'}"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+            
+            table.appendChild(tbody);
+            wordCardsContainer.appendChild(table);
+            
+            // 更新分页信息
+            updatePagination(filteredWords.length);
+            
+            // 绑定列表事件
+            bindListEvents();
+        }
+        
+        // 绑定卡片事件
+        function bindCardEvents() {
+            // 发音按钮事件
+            document.querySelectorAll('.fa-volume-up').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const thaiWord = this.closest('.card-inner').querySelector('.card-front h3').textContent;
+                    const romanizedWord = this.closest('.card-inner').querySelector('.card-front p').textContent;
+                    
+                    // 使用Web Speech API播放泰语发音
+                    playThaiAudio(thaiWord, romanizedWord);
+                });
+            });
+            
+            // 认识/不认识按钮事件
+            document.querySelectorAll('[data-action="mastered"], [data-action="unmastered"]').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const card = this.closest('.card-inner');
+                    const wordId = parseInt(this.closest('[data-word-id]').dataset.wordId);
+                    const isMastered = this.dataset.action === 'mastered';
+                    
+                    // 更新单词状态
+                    updateWordStatus(wordId, isMastered);
+                    
+                    // 更新卡片样式
+                    const cardFront = card.querySelector('.card-front');
+                    const cardBack = card.querySelector('.card-back');
+                    
+                    if (isMastered) {
+                        cardFront.classList.remove('border-primary');
+                        cardFront.classList.add('border-green-500');
+                        cardBack.classList.remove('border-primary');
+                        cardBack.classList.add('border-green-500');
+                    } else {
+                        cardFront.classList.remove('border-green-500');
+                        cardFront.classList.add('border-primary');
+                        cardBack.classList.remove('border-green-500');
+                        cardBack.classList.add('border-primary');
+                    }
+                    
+                    // 显示提示
+                    const wordText = card.querySelector('.card-front h3').textContent;
+                    alert(`已标记为"${isMastered ? '认识' : '不认识'}": ${wordText}`);
+                    
+                    // 翻回正面
+                    setTimeout(() => {
+                        card.style.transform = 'rotateY(0deg)';
+                    }, 500);
+                });
+            });
+        }
+        
+        // 绑定列表事件
+        function bindListEvents() {
+            // 发音按钮事件
+            document.querySelectorAll('[data-action="play-audio"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const thaiWord = row.querySelector('td:first-child div').textContent;
+                    const romanizedWord = row.querySelector('td:nth-child(2) div').textContent;
+                    
+                    // 使用Web Speech API播放泰语发音
+                    playThaiAudio(thaiWord, romanizedWord);
+                });
+            });
+            
+            // 显示例句按钮事件
+            document.querySelectorAll('[data-action="show-example"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const wordId = parseInt(row.dataset.wordId);
+                    const word = wordsData.find(w => w.id === wordId);
+                    
+                    if (word) {
+                        alert(`例句：\n${word.example}\n${word.exampleTranslation}`);
+                    }
+                });
+            });
+            
+            // 切换掌握状态按钮事件
+            document.querySelectorAll('[data-action="toggle-mastered"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const wordId = parseInt(row.dataset.wordId);
+                    const word = wordsData.find(w => w.id === wordId);
+                    
+                    if (word) {
+                        // 切换状态
+                        const newStatus = !word.mastered;
+                        
+                        // 更新单词状态
+                        updateWordStatus(wordId, newStatus);
+                        
+                        // 更新行样式和按钮
+                        if (newStatus) {
+                            row.classList.add('bg-green-50');
+                            this.innerHTML = '<i class="fa fa-star"></i>';
+                            this.classList.remove('text-green-600', 'hover:text-green-800');
+                            this.classList.add('text-yellow-600', 'hover:text-yellow-800');
+                        } else {
+                            row.classList.remove('bg-green-50');
+                            this.innerHTML = '<i class="fa fa-check-circle"></i>';
+                            this.classList.remove('text-yellow-600', 'hover:text-yellow-800');
+                            this.classList.add('text-green-600', 'hover:text-green-800');
+                        }
+                    }
+                });
+            });
+        }
+        
+        // 初始化分页
+        function initPagination() {
+            const paginationContainer = document.querySelector('.flex.justify-center.mt-8 nav');
+            if (!paginationContainer) return;
+            
+            paginationContainer.addEventListener('click', function(e) {
+                const target = e.target.closest('button');
+                if (!target) return;
+                
+                // 获取当前页码
+                const currentPageBtn = paginationContainer.querySelector('.bg-primary');
+                const currentPageNum = parseInt(currentPageBtn.textContent);
+                
+                // 判断点击的是哪个按钮
+                if (target.querySelector('.fa-angle-left')) {
+                    // 上一页
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderCurrentView();
+                    }
+                } else if (target.querySelector('.fa-angle-right')) {
+                    // 下一页
+                    const totalPages = Math.ceil(getFilteredWords().length / wordsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderCurrentView();
+                    }
+                } else {
+                    // 页码按钮
+                    const pageNum = parseInt(target.textContent);
+                    if (!isNaN(pageNum) && pageNum !== currentPage) {
+                        currentPage = pageNum;
+                        renderCurrentView();
+                    }
+                }
+            });
+        }
+        
+        // 更新分页信息
+        function updatePagination(totalWords) {
+            const paginationContainer = document.querySelector('.flex.justify-center.mt-8 nav');
+            if (!paginationContainer) return;
+            
+            const totalPages = Math.ceil(totalWords / wordsPerPage);
+            
+            // 清空分页容器
+            paginationContainer.innerHTML = '';
+            
+            // 添加上一页按钮
+            const prevBtn = document.createElement('button');
+            prevBtn.className = `px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`;
+            prevBtn.innerHTML = '<i class="fa fa-angle-left"></i>';
+            prevBtn.disabled = currentPage === 1;
+            paginationContainer.appendChild(prevBtn);
+            
+            // 添加页码按钮
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `px-3 py-1 rounded-md mx-1 ${i === currentPage ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`;
+                pageBtn.textContent = i;
+                paginationContainer.appendChild(pageBtn);
+            }
+            
+            // 添加下一页按钮
+            const nextBtn = document.createElement('button');
+            nextBtn.className = `px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`;
+            nextBtn.innerHTML = '<i class="fa fa-angle-right"></i>';
+            nextBtn.disabled = currentPage === totalPages;
+            paginationContainer.appendChild(nextBtn);
+            
+            // 重新绑定分页事件
+            initPagination();
+        }
+        
+        // 初始化发音练习
+        function initPronunciationPractice() {
+            const playBtn = document.querySelector('.bg-gray-50 .fa-volume-up').parentElement;
+            const recordBtn = document.querySelector('.bg-secondary');
+            
+            if (playBtn) {
+                playBtn.addEventListener('click', function() {
+                    const thaiWord = document.querySelector('.bg-gray-50 h3').textContent;
+                    const romanizedWord = document.querySelector('.bg-gray-50 p').textContent;
+                    
+                    // 使用Web Speech API播放泰语发音
+                    playThaiAudio(thaiWord, romanizedWord);
+                });
+            }
+            
+            if (recordBtn) {
+                recordBtn.addEventListener('click', function() {
+                    const thaiWord = document.querySelector('.bg-gray-50 h3').textContent;
+                    const romanizedWord = document.querySelector('.bg-gray-50 p').textContent;
+                    
+                    // 模拟录音跟读
+                    alert(`开始录音跟读: ${thaiWord} (${romanizedWord})`);
+                    
+                    // 模拟评分
+                    setTimeout(() => {
+                        const score = Math.floor(Math.random() * 30) + 70; // 70-100之间的随机分数
+                        updatePronunciationScore(score);
+                    }, 2000);
+                });
+            }
+        }
+        
+        // 更新发音评分
+        function updatePronunciationScore(score) {
+            const scoreElement = document.querySelector('.text-sm.font-medium');
+            const progressBar = document.querySelector('.bg-green-500');
+            
+            if (scoreElement && progressBar) {
+                scoreElement.textContent = score + '%';
+                progressBar.style.width = score + '%';
+                
+                // 根据分数改变颜色
+                if (score >= 90) {
+                    progressBar.className = 'bg-green-500 h-2.5 rounded-full';
+                } else if (score >= 75) {
+                    progressBar.className = 'bg-blue-500 h-2.5 rounded-full';
+                } else {
+                    progressBar.className = 'bg-yellow-500 h-2.5 rounded-full';
                 }
             }
-        });
+        }
+        
+        // 初始化搜索功能
+        function initSearch() {
+            const searchInput = document.querySelector('input[placeholder="搜索单词..."]');
+            const searchBtn = searchInput.nextElementSibling;
+            
+            // 搜索按钮点击事件
+            searchBtn.addEventListener('click', function() {
+                performSearch(searchInput.value.trim());
+            });
+            
+            // 输入框回车事件
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch(this.value.trim());
+                }
+            });
+        }
+        
+        // 执行搜索
+        function performSearch(searchTerm) {
+            currentSearchTerm = searchTerm;
+            currentPage = 1; // 重置到第一页
+            renderCurrentView();
+        }
+        
+        // 初始化词库分类筛选
+        function initCategoryFilter() {
+            const categoryItems = document.querySelectorAll('.border-t.border-gray-200 + div ul li');
+            
+            categoryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除所有选中状态
+                    categoryItems.forEach(cat => {
+                        cat.classList.remove('text-primary', 'font-medium');
+                        cat.classList.add('text-gray-600');
+                    });
+                    
+                    // 添加选中状态
+                    this.classList.add('text-primary', 'font-medium');
+                    this.classList.remove('text-gray-600');
+                    
+                    // 获取分类文本
+                    const categoryText = this.textContent.trim();
+                    
+                    // 设置当前分类
+                    switch(categoryText) {
+                        case '日常用语':
+                            currentCategory = '日常用语';
+                            break;
+                        case '旅游必备':
+                            currentCategory = '旅游必备';
+                            break;
+                        case '商务交流':
+                            currentCategory = '商务交流';
+                            break;
+                        case '美食餐饮':
+                            currentCategory = '美食餐饮';
+                            break;
+                        case '交通出行':
+                            currentCategory = '交通出行';
+                            break;
+                        default:
+                            currentCategory = 'all';
+                    }
+                    
+                    currentPage = 1; // 重置到第一页
+                    renderCurrentView();
+                });
+            });
+        }
+        
+        // 获取筛选和搜索后的单词
+        function getFilteredWords() {
+            return wordsData.filter(word => {
+                // 分类筛选
+                if (currentCategory !== 'all' && word.type !== currentCategory) {
+                    return false;
+                }
+                
+                // 搜索筛选
+                if (currentSearchTerm) {
+                    const term = currentSearchTerm.toLowerCase();
+                    return word.thai.toLowerCase().includes(term) || 
+                           word.romanized.toLowerCase().includes(term) || 
+                           word.chinese.toLowerCase().includes(term);
+                }
+                
+                return true;
+            });
+        }
+        
+        // 渲染当前视图
+        function renderCurrentView() {
+            if (currentMode === 'cards') {
+                renderWordCards();
+            } else {
+                renderWordList();
+            }
+        }
+        
+        // 更新单词状态
+        function updateWordStatus(wordId, isMastered) {
+            const wordIndex = wordsData.findIndex(word => word.id === wordId);
+            if (wordIndex !== -1) {
+                wordsData[wordIndex].mastered = isMastered;
+                
+                // 更新学习进度
+                updateLearningProgress();
+                
+                // 可以保存到localStorage
+                // localStorage.setItem('thaiWordsData', JSON.stringify(wordsData));
+            }
+        }
+        
+        // 更新学习进度
+        function updateLearningProgress() {
+            const masteredCount = wordsData.filter(word => word.mastered).length;
+            const totalCount = wordsData.length;
+            
+            // 更新进度显示
+            const todayProgress = document.querySelector('aside .flex.items-center.justify-between:first-of-type .text-sm.font-medium');
+            const weekProgress = document.querySelector('aside .flex.items-center.justify-between:nth-of-type(2) .text-sm.font-medium');
+            
+            if (todayProgress) {
+                todayProgress.textContent = `${masteredCount}/${totalCount}`;
+                const todayProgressBar = todayProgress.closest('div').nextElementSibling.querySelector('div');
+                if (todayProgressBar) {
+                    todayProgressBar.style.width = `${(masteredCount / totalCount) * 100}%`;
+                }
+            }
+            
+            if (weekProgress) {
+                weekProgress.textContent = `${masteredCount}/${totalCount}`;
+                const weekProgressBar = weekProgress.closest('div').nextElementSibling.querySelector('div');
+                if (weekProgressBar) {
+                    weekProgressBar.style.width = `${(masteredCount / totalCount) * 100}%`;
+                }
+            }
+        }
+
+        // 使用Web Speech API播放泰语发音
+        function playThaiAudio(thaiWord, romanizedWord) {
+            // 检查浏览器是否支持Web Speech API
+            if ('speechSynthesis' in window) {
+                // 创建语音合成实例
+                const utterance = new SpeechSynthesisUtterance();
+                
+                // 设置语音属性
+                utterance.text = thaiWord;
+                utterance.lang = 'th-TH'; // 泰语(泰国)
+                utterance.rate = 0.8; // 语速稍慢，便于学习
+                
+                // 尝试找到泰语语音
+                const thaiVoices = window.speechSynthesis.getVoices().filter(voice => 
+                    voice.lang.includes('th') || voice.lang.includes('th-TH')
+                );
+                
+                if (thaiVoices.length > 0) {
+                    utterance.voice = thaiVoices[0]; // 使用找到的第一个泰语语音
+                } else {
+                    // 如果没有找到泰语语音，显示提示并使用默认语音
+                    console.log('未找到泰语语音，使用默认语音');
+                }
+                
+                // 播放语音
+                window.speechSynthesis.speak(utterance);
+                
+                // 显示正在播放的单词
+                const wordElement = document.querySelector('.bg-gray-50 h3');
+                if (wordElement) {
+                    wordElement.textContent = thaiWord;
+                    wordElement.nextElementSibling.textContent = romanizedWord;
+                }
+            } else {
+                // 如果浏览器不支持Web Speech API，显示提示
+                alert('播放发音: ' + thaiWord + ' (' + romanizedWord + ')');
+                console.log('您的浏览器不支持语音合成API');
+            }
+        }
+
+        // 单词认识/不认识按钮事件已在bindCardEvents函数中实现
+
+        // 开始跟读按钮事件已在initPronunciationPractice函数中实现
+
+        // 搜索功能已在initSearch函数中实现
     </script>
 </body>
 </html>
