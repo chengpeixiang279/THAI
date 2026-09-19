@@ -15,28 +15,28 @@
 - CSS3 (Tailwind CSS)
 - JavaScript (原生)
 - Chart.js (数据可视化)
+- Font Awesome (图标)
 
 ## 如何使用
 
 1. 克隆仓库到本地
    ```bash
-   git clone https://github.com/yourusername/thai-words-learning.git
+   git clone https://github.com/chengpeixiang279/THAI.git
    ```
 
 2. 进入项目目录
    ```bash
-   cd thai-words-learning
+   cd THAI
    ```
 
-3. 打开 `index.html` 文件即可开始使用
+3. 打开 `index.html` 文件即可开始使用（需联网加载 Tailwind / Chart.js / Font Awesome）
 
 ## 项目结构
 
 ```
-thai-words-learning/
-├── index.html          # 主页面
-├── images/             # 图片资源目录
-├── .gitignore          # Git忽略文件
+THAI/
+├── index.html          # 主页面（单文件应用）
+├── .gitignore          # Git 忽略文件
 └── README.md           # 项目说明文档
 ```
 
